@@ -1,182 +1,157 @@
-# Hardhat Template
+# Akashic NFT Contracts
 
-A Hardhat-based template for developing Solidity smart contracts, with sensible defaults.
+A Hardhat-based project for developing the Akashic NFT campaign smart contracts for supporter rewards.
 
-- [Hardhat](https://github.com/nomiclabs/hardhat): compile, run and test smart contracts
-- [TypeChain](https://github.com/ethereum-ts/TypeChain): generate TypeScript bindings for smart contracts
-- [Ethers](https://github.com/ethers-io/ethers.js/): renowned Ethereum library and wallet implementation
-- [Solhint](https://github.com/protofire/solhint): code linter
-- [Solcover](https://github.com/sc-forks/solidity-coverage): code coverage
-- [Prettier Plugin Solidity](https://github.com/prettier-solidity/prettier-plugin-solidity): code formatter
+## Overview
 
-## Getting Started
+The Akashic NFT Contracts project allows campaigns to reward their supporters with unique NFTs. Each campaign can have
+its own NFT collection, enabling supporters to receive digital assets as a token of appreciation for their
+contributions. The project includes functionality for minting NFTs, managing campaign metadata, and tracking supporter
+contributions.
 
 ## Features
 
-This template builds upon the frameworks and libraries mentioned above, so for details about their specific features,
-please consult their respective documentations.
+- **Campaign-Specific NFTs**: Each campaign can create its own NFT collection.
+- **Supporter Rewards**: Supporters receive NFTs as rewards for their contributions.
+- **Metadata Management**: Manage campaign metadata and NFT attributes.
+- **Event Emission**: Emit events for key actions like NFT minting and metadata updates.
 
-For example, for Hardhat, you can refer to the [Hardhat Tutorial](https://hardhat.org/tutorial) and the
-[Hardhat Docs](https://hardhat.org/docs). You might be in particular interested in reading the
-[Testing Contracts](https://hardhat.org/tutorial/testing-contracts) section.
+## Getting Started
 
-### Sensible Defaults
+### Prerequisites
 
-This template comes with sensible default configurations in the following files:
+Before you begin, ensure you have the following installed:
 
-```text
-├── .editorconfig
-├── .eslintignore
-├── .eslintrc.yml
-├── .gitignore
-├── .prettierignore
-├── .prettierrc.yml
-├── .solcover.js
-├── .solhint.json
-└── hardhat.config.ts
-```
+- Node.js (version 14.x or later)
+- bun or yarn
+- Hardhat
 
-### VSCode Integration
+### Installation
 
-This template is IDE agnostic, but for the best user experience, you may want to use it in VSCode alongside Nomic
-Foundation's [Solidity extension](https://marketplace.visualstudio.com/items?itemName=NomicFoundation.hardhat-solidity).
+1. Clone the repository:
 
-## Usage
+   ```bash
+   git clone <repository-url>
+   cd akashic-nft-contracts
+   ```
 
-### Pre Requisites
+2. Install the dependencies:
 
-First, you need to install the dependencies:
+   ```bash
+   bun install
+   ```
 
-```sh
-bun install
-```
+3. Set up Hardhat configuration variables:
 
-Then, you need to set up all the required
-[Hardhat Configuration Variables](https://hardhat.org/hardhat-runner/docs/guides/configuration-variables). You might
-also want to install some that are optional.
+   Run the following command to set up required variables:
 
-To assist with the setup process, run `bunx hardhat vars setup`. To set a particular value, such as a BIP-39 mnemonic
-variable, execute this:
+   ```bash
+   bunx hardhat vars setup
+   ```
 
-```sh
-bunx hardhat vars set MNEMONIC
-? Enter value: ‣ here is where your twelve words mnemonic should be put my friend
-```
+   To set a particular value, such as a BIP-39 mnemonic variable, execute:
 
-If you do not already have a mnemonic, you can generate one using this [website](https://iancoleman.io/bip39/).
+   ```bash
+   bunx hardhat vars set MNEMONIC
+   ```
+
+   If you do not already have a mnemonic, you can generate one using [this website](https://iancoleman.io/bip39/).
 
 ### Compile
 
 Compile the smart contracts with Hardhat:
 
-```sh
-bun run compile
+```bash
+bunx hardhat compile
 ```
 
 ### TypeChain
 
 Compile the smart contracts and generate TypeChain bindings:
 
-```sh
-bun run typechain
+```bash
+bunx hardhat typechain
 ```
 
-### Test
+### Testing
 
 Run the tests with Hardhat:
 
-```sh
-bun run test
+```bash
+bunx hardhat test
 ```
 
-### Lint Solidity
+### Linting
 
 Lint the Solidity code:
 
-```sh
-bun run lint:sol
+```bash
+bunx hardhat lint:sol
 ```
-
-### Lint TypeScript
 
 Lint the TypeScript code:
 
-```sh
-bun run lint:ts
+```bash
+bunx hardhat lint:ts
 ```
 
 ### Coverage
 
 Generate the code coverage report:
 
-```sh
-bun run coverage
+```bash
+bunx hardhat coverage
 ```
 
-### Report Gas
+### Gas Reporting
 
 See the gas usage per unit test and average gas per method call:
 
-```sh
-REPORT_GAS=true bun run test
+```bash
+REPORT_GAS=true bunx hardhat test
 ```
 
 ### Clean
 
-Delete the smart contract artifacts, the coverage reports and the Hardhat cache:
+Delete the smart contract artifacts, coverage reports, and the Hardhat cache:
 
-```sh
-bun run clean
+```bash
+bunx hardhat clean
 ```
 
-### Deploy
+### Deployment
 
-Deploy the contracts to Hardhat Network:
+Deploy the contracts to the Hardhat Network:
 
-```sh
-bun run deploy:contracts
+```bash
+bunx hardhat deploy:contracts
 ```
 
 ### Tasks
 
-#### Deploy Lock
+#### Deploy Akashic NFT
 
-Deploy a new instance of the Lock contract via a task:
+Deploy a new instance of the Akashic NFT contract via a task:
 
-```sh
-bun run task:deployLock --unlock 100 --value 0.1
+```bash
+bunx hardhat deploy:campaign-nft
 ```
 
-### Syntax Highlighting
+## Development
 
-If you use VSCode, you can get Solidity syntax highlighting with the
-[hardhat-solidity](https://marketplace.visualstudio.com/items?itemName=NomicFoundation.hardhat-solidity) extension.
+### Local Development with Ganache
 
-## Using GitPod
+1. Install Ganache globally:
 
-[GitPod](https://www.gitpod.io/) is an open-source developer platform for remote development.
+   ```bash
+   bun install -g ganache
+   ```
 
-To view the coverage report generated by `bun run coverage`, just click `Go Live` from the status bar to turn the server
-on/off.
+2. Run a development blockchain:
 
-## Local development with Ganache
+   ```bash
+   ganache -s test
+   ```
 
-### Install Ganache
-
-```sh
-npm i -g ganache
-```
-
-### Run a Development Blockchain
-
-```sh
-ganache -s test
-```
-
-> The `-s test` passes a seed to the local chain and makes it deterministic
-
-Make sure to set the mnemonic in your `.env` file to that of the instance running with Ganache.
-
-## License
-
-This project is licensed under MIT.
+   The `-s test` option passes a seed to the local chain, making it deterministic. Make sure to set the mnemonic in your
+   `.env` file to match the instance running with Ganache.
