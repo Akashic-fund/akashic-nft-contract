@@ -1,10 +1,9 @@
 {
-  "name": "@prb/hardhat-template",
-  "description": "Hardhat-based template for developing Solidity smart contracts",
+  "name": "akashic-nft-contracts",
+  "description": "Smart contracts for Akashic NFT campaign supporter rewards",
   "version": "1.0.0",
   "author": {
-    "name": "Paul Razvan Berg",
-    "url": "https://github.com/PaulRBerg"
+    "name": "Akashic Team"
   },
   "devDependencies": {
     "@nomicfoundation/hardhat-chai-matchers": "^2.0.2",
@@ -48,35 +47,30 @@
   ],
   "keywords": [
     "blockchain",
-    "ethers",
     "ethereum",
     "hardhat",
     "smart-contracts",
     "solidity",
-    "template",
-    "typescript",
-    "typechain"
+    "nft",
+    "campaign",
+    "supporter"
   ],
-  "publishConfig": {
-    "access": "public"
-  },
   "scripts": {
-    "clean": "rimraf ./artifacts ./cache ./coverage ./types ./coverage.json && bun run typechain",
+    "clean": "rimraf ./artifacts ./cache ./coverage ./types ./coverage.json && yarn typechain",
     "compile": "cross-env TS_NODE_TRANSPILE_ONLY=true hardhat compile",
-    "coverage": "hardhat coverage --solcoverjs ./.solcover.js --temp artifacts --testfiles \"test/**/*.ts\" && bun run typechain",
+    "coverage": "hardhat coverage --solcoverjs ./.solcover.js --temp artifacts --testfiles \"test/**/*.ts\" && yarn typechain",
     "deploy:contracts": "hardhat deploy",
-    "lint": "bun run lint:sol && bun run lint:ts && bun run prettier:check",
+    "deploy:campaign-nft": "hardhat deploy --tags CampaignNFTFactory",
+    "lint": "yarn lint:sol && yarn lint:ts && yarn prettier:check",
     "lint:sol": "solhint --max-warnings 0 \"contracts/**/*.sol\"",
     "lint:ts": "eslint --ignore-path ./.eslintignore --ext .js,.ts .",
-    "postcompile": "bun run typechain",
+    "postcompile": "yarn typechain",
     "prettier:check": "prettier --check \"**/*.{js,json,md,sol,ts,yml}\"",
     "prettier:write": "prettier --write \"**/*.{js,json,md,sol,ts,yml}\"",
-    "task:deployLock": "hardhat task:deployLock",
-    "task:withdraw": "hardhat task:withdraw",
     "test": "hardhat test",
     "typechain": "cross-env TS_NODE_TRANSPILE_ONLY=true hardhat typechain"
   },
   "dependencies": {
-    "@openzeppelin/contracts": "4.9.6"
+    "@openzeppelin/contracts": "5.0.0"
   }
 }
