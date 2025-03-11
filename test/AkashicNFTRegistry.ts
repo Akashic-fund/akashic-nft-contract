@@ -60,7 +60,7 @@ describe("AkashicNFTRegistry", function () {
             } = await loadFixture(deployRegistryFixture);
 
             // Create a campaign NFT
-            await factory.connect(owner).createCampaignNFT(
+            await factory.connect(campaignOwner).createCampaignNFT(
                 campaignId,
                 campaignName,
                 symbol,
@@ -107,7 +107,7 @@ describe("AkashicNFTRegistry", function () {
             } = await loadFixture(deployRegistryFixture);
 
             // Create a campaign NFT
-            await factory.connect(owner).createCampaignNFT(
+            await factory.connect(campaignOwner).createCampaignNFT(
                 campaignId,
                 campaignName,
                 symbol,

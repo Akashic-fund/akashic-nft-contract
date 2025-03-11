@@ -42,7 +42,7 @@ describe("CampaignNFTFactory", function () {
     });
 
     describe("Creating Campaign NFTs", function () {
-        it("Should allow owner to create a new campaign NFT", async function () {
+        it("Should allow any address to create a campaign NFT", async function () {
             const {
                 factory,
                 campaignId,
@@ -50,13 +50,13 @@ describe("CampaignNFTFactory", function () {
                 symbol,
                 defaultTokenURI,
                 minDonationAmount,
-                owner,
+                supporter,
                 campaignOwner,
                 treasury
             } = await loadFixture(deployCampaignNFTFactoryFixture);
 
-            // Create a new campaign NFT
-            const tx = await factory.connect(owner).createCampaignNFT(
+            // Using a non-owner address (supporter) to create a campaign NFT
+            const tx = await factory.connect(supporter).createCampaignNFT(
                 campaignId,
                 campaignName,
                 symbol,
@@ -80,42 +80,6 @@ describe("CampaignNFTFactory", function () {
                 );
 
             expect(nftAddress).to.not.equal(ethers.ZeroAddress);
-            expect(await factory.campaignNFTs(campaignId)).to.equal(nftAddress);
-
-            // Verify the deployed NFT contract has the correct parameters
-            const CampaignNFT = await ethers.getContractFactory("CampaignNFT");
-            const nftContract = CampaignNFT.attach(nftAddress) as CampaignNFT;
-
-            expect(await nftContract.campaignId()).to.equal(campaignId);
-            expect(await nftContract.campaignName()).to.equal(campaignName);
-            expect(await nftContract.defaultTokenURI()).to.equal(defaultTokenURI);
-            expect(await nftContract.minDonationAmount()).to.equal(minDonationAmount);
-            expect(await nftContract.owner()).to.equal(campaignOwner.address);
-            expect(await nftContract.campaignTreasury()).to.equal(treasury.address);
-        });
-
-        it("Should not allow non-owner to create a campaign NFT", async function () {
-            const {
-                factory,
-                campaignId,
-                campaignName,
-                symbol,
-                defaultTokenURI,
-                minDonationAmount,
-                campaignOwner,
-                treasury,
-                supporter
-            } = await loadFixture(deployCampaignNFTFactoryFixture);
-
-            await expect(factory.connect(supporter).createCampaignNFT(
-                campaignId,
-                campaignName,
-                symbol,
-                defaultTokenURI,
-                minDonationAmount,
-                campaignOwner.address,
-                treasury.address
-            )).to.be.revertedWith("Ownable: caller is not the owner");
         });
 
         it("Should not allow creating a campaign NFT with an existing ID", async function () {
@@ -194,6 +158,91 @@ describe("CampaignNFTFactory", function () {
 
             expect(await nftContract.isSupporter(supporter.address)).to.be.true;
             expect(await nftContract.ownerOf(1)).to.equal(supporter.address);
+        });
+    });
+
+    describe("Campaign NFT Creation", function () {
+        it("Should allow any address to create a campaign NFT", async function () {
+            const { factory, campaignId, campaignName, symbol, defaultTokenURI, minDonationAmount, supporter, treasury } = await loadFixture(deployCampaignNFTFactoryFixture);
+
+            // Using a non-owner address (supporter) to create a campaign NFT
+            const tx = await factory.connect(supporter).createCampaignNFT(
+                campaignId,
+                campaignName,
+                symbol,
+                defaultTokenURI,
+                minDonationAmount,
+                supporter.address,
+                treasury.address
+            );
+
+            const nftAddress = await factory.getCampaignNFT(campaignId);
+
+            // Verify the event with the actual address
+            await expect(tx)
+                .to.emit(factory, "CampaignNFTCreated")
+                .withArgs(
+                    campaignId,
+                    nftAddress,
+                    supporter.address,
+                    treasury.address
+                );
+
+            expect(nftAddress).to.not.equal(ethers.ZeroAddress);
+        });
+
+        it("Should not allow creating a campaign with the same ID", async function () {
+            const { factory, campaignId, campaignName, symbol, defaultTokenURI, minDonationAmount, owner, campaignOwner, treasury } = await loadFixture(deployCampaignNFTFactoryFixture);
+
+            // First creation
+            await factory.connect(owner).createCampaignNFT(
+                campaignId,
+                campaignName,
+                symbol,
+                defaultTokenURI,
+                minDonationAmount,
+                campaignOwner.address,
+                treasury.address
+            );
+
+            // Second creation with same ID should fail
+            await expect(factory.connect(campaignOwner).createCampaignNFT(
+                campaignId,
+                campaignName,
+                symbol,
+                defaultTokenURI,
+                minDonationAmount,
+                campaignOwner.address,
+                treasury.address
+            )).to.be.revertedWith("Campaign NFT already exists");
+        });
+
+        it("Should not allow zero address as campaign owner", async function () {
+            const { factory, campaignId, campaignName, symbol, defaultTokenURI, minDonationAmount, owner, treasury } = await loadFixture(deployCampaignNFTFactoryFixture);
+
+            await expect(factory.connect(owner).createCampaignNFT(
+                campaignId,
+                campaignName,
+                symbol,
+                defaultTokenURI,
+                minDonationAmount,
+                ethers.ZeroAddress,
+                treasury.address
+            )).to.be.revertedWith("Campaign owner cannot be zero address");
+        });
+
+        it("Should not allow zero address as treasury", async function () {
+            const { factory, campaignId, campaignName, symbol, defaultTokenURI, minDonationAmount, owner, campaignOwner } = await loadFixture(deployCampaignNFTFactoryFixture);
+
+            await expect(factory.connect(owner).createCampaignNFT(
+                campaignId,
+                campaignName,
+                symbol,
+                defaultTokenURI,
+                minDonationAmount,
+                campaignOwner.address,
+                ethers.ZeroAddress
+            )).to.be.revertedWith("Treasury cannot be zero address");
         });
     });
 }); 

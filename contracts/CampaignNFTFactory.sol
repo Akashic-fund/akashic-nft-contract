@@ -39,8 +39,14 @@ contract CampaignNFTFactory is Ownable {
         uint256 minDonationAmount,
         address campaignOwner,
         address campaignTreasury
-    ) external onlyOwner returns (address) {
+    ) external returns (address) {
         require(campaignNFTs[campaignId] == address(0), "Campaign NFT already exists");
+
+        // Ensure campaign owner is not zero address
+        require(campaignOwner != address(0), "Campaign owner cannot be zero address");
+
+        // Ensure treasury is not zero address
+        require(campaignTreasury != address(0), "Treasury cannot be zero address");
 
         CampaignNFT newNFT = new CampaignNFT(
             campaignId,
